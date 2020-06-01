@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "server/**",    
+    "dist/**",
+    "**/__test__",
+    "**/__tests__",
+    "webpack.config.dev.ts",
+    "webpack.config.prod.ts"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "name": "jin-curlize",
+  "version": "0.5.0",
+  "description": "curl command create from request object(fastify, express etc).",
+  "scripts": {
+    "debug": "node --nolazy --require ts-node/register --inspect-brk=9229 ./node_modules/.bin/jest --no-cache --runInBand --detectOpenHandles",
+    "build": "just build",
+    "ctix": "ctix",
+    "pub": "just pub",
+    "pub:prod": "just pub:prod",
+    "pub:dev": "just pub",
+    "clean": "just clean",
+    "test": "DEBUG=jcurlize:* jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imjuni/jin-curlize.git"
+  },
+  "author": "ByungJoon Lee <imjuni+github@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/imjuni/jin-curl/issues"
+  },
+  "homepage": "https://github.com/imjuni/jin-curl#readme",
+  "main": "dist/index.js",
+  "typings": "dist/src/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.6",
+    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/eslint-plugin-tslint": "^4.8.1",
+    "@typescript-eslint/parser": "^4.8.1",
+    "axios": "^0.21.0",
+    "create-ts-index": "^1.13.3",
+    "ctix": "^0.3.1",
+    "debug": "^4.3.1",
+    "docsify-cli": "^4.4.0",
+    "eslint": "^7.13.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript": "^12.0.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-compat": "^3.8.0",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^30.7.8",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-no-param-reassign-allow-reduce": "^1.0.1",
+    "eslint-plugin-prefer-arrow": "^1.2.2",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "fastify": "^3.8.0",
+    "jest": "^26.6.3",
+    "just-scripts": "^0.41.0",
+    "nock": "^12.0.3",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.4.4",
+    "ts-loader": "^7.0.5",
+    "ts-node": "^9.0.0",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "tslint": "^6.1.2",
+    "typedoc": "^0.17.7",
+    "typescript": "^4.1.2",
+    "typescript-json-schema": "^0.42.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.json"
+      }
+    },
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/__tests__/*.(ts|tsx)"
+    ]
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "fast-stringify": "^2.0.0",
+    "fp-ts": "^2.8.6",
+    "my-easy-fp": "^0.6.0"
+  }
+}
