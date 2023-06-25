@@ -3,5 +3,37 @@
   "trailingComma": "all",
   "printWidth": 120,
   "arrowParens": "always",
-  "parser": "typescript"
+  "parser": "typescript",
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "parser": "markdown"
+      }
+    },
+    {
+      "files": ".eslintrc",
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": [
+        "tsconfig.json",
+        "tsconfig.*.json"
+      ],
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": [
+        ".vscode/launch.json",
+        ".vscode/settings.json"
+      ],
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
 }
