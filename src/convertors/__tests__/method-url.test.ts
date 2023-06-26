@@ -1,5 +1,5 @@
-import getMethod from '#convertor/IncomingMessage/getMethod';
-import getUrl from '#convertor/IncomingMessage/getUrl';
+import getMethod from '#convertors/IncomingMessage/getMethod';
+import getUrl from '#convertors/IncomingMessage/getUrl';
 import getIndent from '#tools/getIndent';
 
 describe('getMethod', () => {

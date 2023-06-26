@@ -1,4 +1,4 @@
-import getContentType from '#convertor/v3/getContentType';
+import getContentType from '#convertors/v3/getContentType';
 import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
 import type IFastifyMultipartFormData from '#interfaces/IFastifyMultipartFormData';
 import type { FastifyRequest } from 'fastify';

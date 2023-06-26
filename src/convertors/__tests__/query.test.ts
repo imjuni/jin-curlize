@@ -1,4 +1,4 @@
-import generateQuerystring from '#generator/generateQuerystring';
+import generateQuerystring from '#generators/generateQuerystring';
 import encodeQuerystring from '#tools/encodeQuerystring';
 
 describe('generate-querystring', () => {

@@ -1,4 +1,4 @@
-import generateHeader from '#generator/generateHeader';
+import generateHeader from '#generators/generateHeader';
 import defaultHeaderFilterItems from '#tools/defaultHeaderFilterItems';
 import type { IncomingHttpHeaders } from 'http';
 
@@ -23,7 +23,7 @@ describe('generate-header', () => {
     const header = generateHeader(
       {
         host: 'http://localhost',
-        'content-type': 'multipart/form-data;boundary---------+',
+        'content-type': 'multipart/form-data; boundary=--------------------------567807848329877144365887',
         'access-token': 'Bearer i-am-access-token',
       },
       { prettify: true },

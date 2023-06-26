@@ -14,7 +14,7 @@
     "postpack:prod": "run-s ctix:remove clean:dts",
     "ctix:single": "NODE_ENV=production ctix single --project tsconfig.json --config ./.configs/.ctirc",
     "ctix:remove": "NODE_ENV=production ctix remove --project tsconfig.json --config ./.configs/.ctirc",
-    "prepub:prod": "npm run clean && npm run pack:prod",
+    "prepub:prod": "run-s clean pack:prod",
     "pub:prod": "npm publish",
     "pub:dev": "npm publish --registry http://localhost:8901 --force",
     "clean": "rimraf dist artifact",
