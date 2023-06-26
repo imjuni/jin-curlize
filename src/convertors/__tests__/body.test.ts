@@ -1,7 +1,7 @@
-import getBody from '#convertor/v3/getBody';
-import getContentType from '#convertor/v3/getContentType';
-import getDefaultMultipartFormTransformer from '#convertor/v3/getDefaultMultipartFormTransformer';
-import generateBody from '#generator/generateBody';
+import getBody from '#convertors/v3/getBody';
+import getContentType from '#convertors/v3/getContentType';
+import getDefaultMultipartFormTransformer from '#convertors/v3/getDefaultMultipartFormTransformer';
+import generateBody from '#generators/generateBody';
 
 describe('get-content-type', () => {
   it('form-type', () => {

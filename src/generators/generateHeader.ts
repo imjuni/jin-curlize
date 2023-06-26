@@ -1,4 +1,4 @@
-import getContentType from '#convertor/v3/getContentType';
+import getContentType from '#convertors/v3/getContentType';
 import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
 import defaultHeaderFilterItems from '#tools/defaultHeaderFilterItems';
 import getIndent from '#tools/getIndent';

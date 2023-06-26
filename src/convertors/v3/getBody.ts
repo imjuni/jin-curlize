@@ -1,8 +1,8 @@
-import getContentType from '#convertor/v3/getContentType';
+import getContentType from '#convertors/v3/getContentType';
+import getDefaultMultipartFormTransformer from '#convertors/v3/getDefaultMultipartFormTransformer';
 import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
 import type { JSONObject } from '#interfaces/JSONValue';
 import type { FastifyRequest } from 'fastify';
-import getDefaultMultipartFormTransformer from './getDefaultMultipartFormTransformer';
 
 export default function getBody(
   req: Pick<FastifyRequest, 'body'> & { raw: Pick<FastifyRequest['raw'], 'headers'> },

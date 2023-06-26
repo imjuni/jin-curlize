@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import createFromFastify3 from '#convertor/v3/createFromFastify3';
+import createFromFastify3 from '#convertors/v3/createFromFastify3';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
 import axios from 'axios';

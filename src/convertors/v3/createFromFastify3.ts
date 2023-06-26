@@ -1,9 +1,9 @@
-import getMethod from '#convertor/IncomingMessage/getMethod';
-import getUrl from '#convertor/IncomingMessage/getUrl';
-import getBody from '#convertor/v3/getBody';
-import generateBody from '#generator/generateBody';
-import generateHeader from '#generator/generateHeader';
-import generateQuerystring from '#generator/generateQuerystring';
+import getMethod from '#convertors/IncomingMessage/getMethod';
+import getUrl from '#convertors/IncomingMessage/getUrl';
+import getBody from '#convertors/v3/getBody';
+import generateBody from '#generators/generateBody';
+import generateHeader from '#generators/generateHeader';
+import generateQuerystring from '#generators/generateQuerystring';
 import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
 import getIndent from '#tools/getIndent';
 import getNewline from '#tools/getNewline';
