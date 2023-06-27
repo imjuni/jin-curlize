@@ -25,7 +25,7 @@ export default function createFromFastify3(
         '',
       )}${generateQuerystring(url, options)}'`,
     ],
-    [options.disableFollowRedirect ?? false ? '--location' : undefined],
+    [options.disableFollowRedirect ?? true ? undefined : '--location'],
     generateHeader(im.headers, options),
     generateBody(getBody(req, options), options),
   ]
