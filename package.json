@@ -1,7 +1,7 @@
 {
   "name": "jin-curlize",
-  "version": "1.0.2",
-  "description": "curl command create from request object(fastify, express etc).",
+  "version": "1.1.0",
+  "description": "curl command create from fastify request object",
   "scripts": {
     "debug": "node --nolazy --require ts-node/register --inspect-brk=9229 ./node_modules/.bin/jest --no-cache --runInBand --detectOpenHandles",
     "lint": "eslint --cache .",
@@ -46,9 +46,7 @@
       "typings": "./dist/esm/index.d.mts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "devDependencies": {
     "@fastify/formbody": "^7.4.0",
     "@fastify/multipart": "^7.7.0",
@@ -105,9 +103,7 @@
     "my-easy-fp": "^0.21.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "cross-env NODE_ENV=production eslint --cache"
-    ],
+    "*.{js,jsx,ts,tsx}": ["cross-env NODE_ENV=production eslint --cache"],
     "*.{js,jsx,ts,tsx},*.json,.{eslintrc.cjs,prettierrc}": [
       "cross-env NODE_ENV=production prettier --ignore-path .eslintignore --parser json --write"
     ]
