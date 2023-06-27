@@ -49,7 +49,7 @@ flowchart LR
 
 ```ts
 import fastify from 'fastify';
-import { createV3 } from 'jin-curlize';
+import { createFromFastify3 } from 'jin-curlize';
 
 const fastify = require('fastify')({
   logger: {
@@ -68,8 +68,8 @@ const fastify = require('fastify')({
           url: request.url,
           path: request.routerPath,
           parameters: request.params,
-          headers: request.headers
-          curl: createV3(request)
+          headers: request.headers,
+          curl: createFromFastify3(request, { prettify: false })
         };
       }
     }
@@ -115,9 +115,9 @@ curl -X POST 'http://localhost:3000/post-form' --header 'content-type: applicati
 ## How do I add transaction id on querystring?
 
 ```ts
-import { createV3, encodeQuerystring } from 'jin-curlize';
+import { createFromFastify3, encodeQuerystring } from 'jin-curlize';
 
-createV3(req, {
+createFromFastify3(req, {
   prettify: false,
   replacer: {
     querystring: (qs) => {
