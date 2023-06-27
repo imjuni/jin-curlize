@@ -5,6 +5,8 @@
   "scripts": {
     "debug": "node --nolazy --require ts-node/register --inspect-brk=9229 ./node_modules/.bin/jest --no-cache --runInBand --detectOpenHandles",
     "lint": "eslint --cache .",
+    "prettier": "prettier --write .",
+    "lint-staged": "lint-staged",
     "prebuild": "run-p clean lint",
     "build": "tsc -p tsconfig.prod.json",
     "prepack:dev": "npm run build && run-s clean ctix:single",
@@ -62,6 +64,7 @@
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "axios": "^1.4.0",
+    "cross-env": "^7.0.3",
     "ctix": "^1.8.2",
     "deps-diff": "^1.0.2",
     "eslint": "^8.43.0",
@@ -99,6 +102,14 @@
   },
   "dependencies": {
     "fast-safe-stringify": "^2.1.1",
-    "my-easy-fp": "^0.20.3"
+    "my-easy-fp": "^0.21.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "cross-env NODE_ENV=production eslint --cache"
+    ],
+    "*.{js,jsx,ts,tsx},*.json,.{eslintrc.cjs,prettierrc}": [
+      "cross-env NODE_ENV=production prettier --ignore-path .eslintignore --parser json --write"
+    ]
   }
 }

@@ -25,7 +25,7 @@ Why?
 - [Example](#example)
 - [Options](#options)
 - [How do I add transaction id on querystring?](#how-do-i-add-transaction-id-on-querystring)
-- [r2curl](#r2curl)
+- [jin-axios-curlize](#jin-axios-curlize)
 
 ## How to works?
 
@@ -103,14 +103,14 @@ curl -X POST 'http://localhost:3000/post-form' --header 'content-type: applicati
 
 ## Options
 
-| Name | Requirement | Description |
-|-|-|-|
-| prettify | require | Apply prettifing. Add newline and backslash add on line-ending |
-| indent | optional | Only work on prettify set true, make space size |
-| disableFollowRedirect| optional | If set true, remove `--location` option from command |
-| replacer.querystring | optional | replacer for querystring |
-| replacer.body | optional | replacer for body |
-| replacer.header | optional | replacer for header |
+| Name                  | Requirement | Description                                                    |
+| --------------------- | ----------- | -------------------------------------------------------------- |
+| prettify              | require     | Apply prettifing. Add newline and backslash add on line-ending |
+| indent                | optional    | Only work on prettify set true, make space size                |
+| disableFollowRedirect | optional    | If set true, remove `--location` option from command           |
+| replacer.querystring  | optional    | replacer for querystring                                       |
+| replacer.body         | optional    | replacer for body                                              |
+| replacer.header       | optional    | replacer for header                                            |
 
 ## How do I add transaction id on querystring?
 
@@ -130,6 +130,6 @@ createV3(req, {
 });
 ```
 
-## r2curl
+## jin-axios-curlize
 
-If you want that curl command generate from AxiosRequest, use [r2curl](https://www.npmjs.com/package/r2curl) package.
+If you want that curl command generate from AxiosRequest, use [jin-axios-curlize](https://www.npmjs.com/package/jin-axios-curlize) package.

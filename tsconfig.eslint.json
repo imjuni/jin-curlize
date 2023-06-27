@@ -1,16 +1,8 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "**/*.ts",
-    ".eslintrc.js",
-    "**/__test__",
-    "**/__tests__",
-    "webpack.config.dev.ts",
-    "webpack.config.prod.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "server/**",    
-    "dist/**"
-  ]
+  "compilerOptions": {
+    "allowJs": true
+  },
+  "include": ["./src", ".eslintrc.cjs", "jest.config.cjs"],
+  "exclude": ["**/node_modules/**", "**/dist/**/*", "**/.configs/**"]
 }

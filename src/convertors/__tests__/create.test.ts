@@ -5,7 +5,7 @@ import fastifyMultipart from '@fastify/multipart';
 import axios from 'axios';
 import fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastify';
 import FormData from 'form-data';
-import { isError } from 'my-easy-fp';
+import { isError, parseBool } from 'my-easy-fp';
 import querystring from 'node:querystring';
 
 let server: FastifyInstance;
@@ -32,15 +32,15 @@ describe('create', () => {
     });
 
     server.get('/curlize', (req, reply) => {
-      const prettify = Boolean(req.headers.prettify);
-      const disableFollowRedirect = Boolean(req.headers['disable-follow-redirect']);
+      const prettify = parseBool(req.headers.prettify);
+      const disableFollowRedirect = parseBool(req.headers['disable-follow-redirect'] ?? true);
       const curlCmd = createFromFastify3(req, { prettify, disableFollowRedirect });
 
       reply.send(curlCmd);
     });
 
     server.post('/post-form', {}, (req, reply) => {
-      const prettify = Boolean(req.headers.prettify);
+      const prettify = parseBool(req.headers.prettify);
       const curlCmd = createFromFastify3(req, { prettify });
 
       reply.send(curlCmd);
@@ -66,16 +66,16 @@ describe('create', () => {
     expect(resp.data).toEqual(`curl -X GET 'http://localhost:33327/curlize' --header 'set-uuid: true'`);
   });
 
-  test('get', async () => {
+  test('get - disable-follow-redirect', async () => {
     const resp = await axios.request({
       url: `http://localhost:${port}/curlize`,
-      headers: { 'disable-follow-redirect': true },
+      headers: { 'disable-follow-redirect': 'false' },
     });
 
     console.log('get: ', resp.data);
 
     expect(resp.data).toEqual(
-      `curl -X GET 'http://localhost:33327/curlize' --location --header 'disable-follow-redirect: true'`,
+      `curl -X GET 'http://localhost:33327/curlize' --location --header 'disable-follow-redirect: false'`,
     );
   });
 

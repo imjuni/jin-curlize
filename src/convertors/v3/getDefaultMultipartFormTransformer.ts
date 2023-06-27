@@ -27,6 +27,7 @@ export default function getDefaultMultipartFormTransformer(
       .filter((entry) => entry.type === 'field')
       .reduce<Record<string, unknown>>((aggregation, entry) => {
         const value = aggregation[entry.key];
+
         if (value != null && !Array.isArray(value)) {
           return { ...aggregation, [entry.key]: [value, entry.value] };
         }
