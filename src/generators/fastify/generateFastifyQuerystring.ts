@@ -1,6 +1,6 @@
 import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
 
-export default function generateQuerystring(url: URL, options: ICurlizeOptions): string {
+export default function generateFastifyQuerystring(url: URL, options: ICurlizeOptions): string {
   const keys = Array.from(url.searchParams.keys());
 
   if (keys.length <= 0) {

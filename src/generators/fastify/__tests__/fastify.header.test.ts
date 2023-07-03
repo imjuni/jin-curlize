@@ -1,10 +1,10 @@
-import generateHeader from '#generators/generateHeader';
+import generateFastifyHeader from '#generators/fastify/generateFastifyHeader';
 import defaultHeaderFilterItems from '#tools/defaultHeaderFilterItems';
 import type { IncomingHttpHeaders } from 'http';
 
 describe('generate-header', () => {
   it('string-type', () => {
-    const header = generateHeader(
+    const header = generateFastifyHeader(
       {
         host: 'http://localhost',
         'content-type': 'application/x-www-form-urlencoded',
@@ -20,7 +20,7 @@ describe('generate-header', () => {
   });
 
   it('string-type refine-header-additional-field', () => {
-    const header = generateHeader(
+    const header = generateFastifyHeader(
       {
         host: 'http://localhost',
         'content-type': 'multipart/form-data; boundary=--------------------------567807848329877144365887',
@@ -36,7 +36,7 @@ describe('generate-header', () => {
   });
 
   it('string-type refine-header-undefined', () => {
-    const header = generateHeader(
+    const header = generateFastifyHeader(
       {
         host: 'http://localhost',
         'content-type': undefined,
@@ -52,7 +52,7 @@ describe('generate-header', () => {
   });
 
   it('string[]-type', () => {
-    const header = generateHeader(
+    const header = generateFastifyHeader(
       {
         host: 'http://localhost',
         'content-type': 'application/x-www-form-urlencoded',
@@ -70,7 +70,7 @@ describe('generate-header', () => {
   });
 
   it('string[]-type+array', () => {
-    const header = generateHeader(
+    const header = generateFastifyHeader(
       {
         host: 'http://localhost',
         'content-type': 'application/x-www-form-urlencoded',
@@ -89,8 +89,28 @@ describe('generate-header', () => {
     ]);
   });
 
+  it('string[]-type+array+changeHeaderKey', () => {
+    const header = generateFastifyHeader(
+      {
+        host: 'http://localhost',
+        'content-type': 'application/x-www-form-urlencoded',
+        'access-token': 'Bearer i-am-access-token',
+        referers: ['http://site1', 'http://site2'],
+        user: undefined,
+      },
+      { prettify: false, changeHeaderKey: true },
+    );
+
+    expect(header).toEqual([
+      `--header 'Content-Type: application/x-www-form-urlencoded'`,
+      `--header 'Access-Token: Bearer i-am-access-token'`,
+      `--header 'Referers: http://site1,http://site2'`,
+      `--header 'User:  '`,
+    ]);
+  });
+
   it('replacer-string[]-type+array', () => {
-    const header = generateHeader(
+    const header = generateFastifyHeader(
       {
         host: 'http://localhost',
         'content-type': 'application/x-www-form-urlencoded',

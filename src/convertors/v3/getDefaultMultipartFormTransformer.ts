@@ -1,15 +1,17 @@
 import getContentType from '#convertors/v3/getContentType';
+import { CE_FORM_CONTENT_TYPE } from '#interfaces/CE_FORM_CONTENT_TYPE';
+import type IAxiosRequestConfigOptions from '#interfaces/IAxiosRequestConfigOptions';
 import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
 import type IFastifyMultipartFormData from '#interfaces/IFastifyMultipartFormData';
 import type { FastifyRequest } from 'fastify';
 
 export default function getDefaultMultipartFormTransformer(
   req: Pick<FastifyRequest, 'body'> & { raw: Pick<FastifyRequest['raw'], 'headers'> },
-  options: ICurlizeOptions,
+  options?: Pick<ICurlizeOptions, 'replacer'> | Pick<IAxiosRequestConfigOptions, 'replacer'>,
 ) {
   const contentType = getContentType(req.raw.headers);
 
-  if (contentType === 'multipart/form-data' && options.replacer?.body == null) {
+  if (contentType === CE_FORM_CONTENT_TYPE.MULTI_PART && options?.replacer?.body == null) {
     const body = req.body as Record<string, IFastifyMultipartFormData | IFastifyMultipartFormData[]>;
 
     const refined = Object.entries(body)

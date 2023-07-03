@@ -1,9 +1,9 @@
 import getMethod from '#convertors/IncomingMessage/getMethod';
 import getUrl from '#convertors/IncomingMessage/getUrl';
 import getBody from '#convertors/v3/getBody';
-import generateBody from '#generators/generateBody';
-import generateHeader from '#generators/generateHeader';
-import generateQuerystring from '#generators/generateQuerystring';
+import generateFastifyBody from '#generators/fastify/generateFastifyBody';
+import generateFastifyHeader from '#generators/fastify/generateFastifyHeader';
+import generateQuerystring from '#generators/fastify/generateFastifyQuerystring';
 import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
 import getIndent from '#tools/getIndent';
 import getNewline from '#tools/getNewline';
@@ -26,8 +26,8 @@ export default function createFromFastify3(
       )}${generateQuerystring(url, options)}'`,
     ],
     [options.disableFollowRedirect ?? true ? undefined : '--location'],
-    generateHeader(im.headers, options),
-    generateBody(getBody(req, options), options),
+    generateFastifyHeader(im.headers, options),
+    generateFastifyBody(im.headers, getBody(req, options), options),
   ]
     .flat()
     .filter((element) => element != null);
