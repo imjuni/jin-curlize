@@ -4,19 +4,7 @@ import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 /**
  * Generate Option
  */
-export default interface ICurlizeOptions {
-  /**
-   * prettify command. use newline charactor
-   * */
-  prettify: boolean;
-
-  /**
-   * indent size, it pass to stringify
-   *
-   * @default 2
-   * */
-  indent?: number;
-
+export default interface IAxiosRequestConfigOptions {
   /**
    * change header key case. [IncomingHttpHeaders](https://github.com/nodejs/node/blob/v16.9.0/lib/http.js) makes
    * header key lowercase. For example, `Content-Type` to `content-type`. `changeHeaderKey` option makes
@@ -25,11 +13,6 @@ export default interface ICurlizeOptions {
    * eg. content-type > Content-Type
    */
   changeHeaderKey?: boolean;
-
-  /**
-   * Disable redirection follow option. this option not setted or false, add --location option.
-   */
-  disableFollowRedirect?: boolean;
 
   /** replace input data for curl command building */
   replacer?: {

@@ -1,6 +1,5 @@
 import getMethod from '#convertors/IncomingMessage/getMethod';
 import getUrl from '#convertors/IncomingMessage/getUrl';
-import getIndent from '#tools/getIndent';
 
 describe('getMethod', () => {
   it('undefined', () => {
@@ -80,22 +79,5 @@ describe('getUrl', () => {
 
     expect(r.href).toEqual('https://localhost:3000/marvel/ironman/cool');
     expect(r.pathname).toEqual('/marvel/ironman/cool');
-  });
-});
-
-describe('getIndent', () => {
-  it('2-space', () => {
-    const indent = getIndent({ prettify: true });
-    expect(indent).toEqual('  ');
-  });
-
-  it('2-space', () => {
-    const indent = getIndent({ prettify: true, indent: 3 });
-    expect(indent).toEqual('   ');
-  });
-
-  it('no-indent', () => {
-    const indent = getIndent({ prettify: false });
-    expect(indent).toEqual('');
   });
 });

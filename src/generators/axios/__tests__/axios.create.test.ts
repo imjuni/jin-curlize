@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import createFromFastify3 from '#convertors/v3/createFromFastify3';
+import createAxiosFromFastify3 from '#convertors/v3/createAxiosFromFastify3';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
 import axios from 'axios';
@@ -32,18 +32,17 @@ describe('create', () => {
     });
 
     server.get('/curlize', (req, reply) => {
-      const prettify = parseBool(req.headers.prettify);
-      const disableFollowRedirect = parseBool(req.headers['disable-follow-redirect'] ?? true);
-      const curlCmd = createFromFastify3(req, { prettify, disableFollowRedirect });
+      const changeHeaderKey = parseBool(req.headers['change-header-key'] ?? false);
+      const axiosReq = createAxiosFromFastify3(req, { changeHeaderKey });
 
-      reply.send(curlCmd);
+      reply.send(axiosReq);
     });
 
     server.post('/post-form', {}, (req, reply) => {
-      const prettify = parseBool(req.headers.prettify);
-      const curlCmd = createFromFastify3(req, { prettify });
+      const changeHeaderKey = parseBool(req.headers['change-header-key'] ?? false);
+      const axiosReq = createAxiosFromFastify3(req, { changeHeaderKey });
 
-      reply.send(curlCmd);
+      reply.send(axiosReq);
     });
 
     await server
@@ -63,20 +62,26 @@ describe('create', () => {
 
     console.log('get: ', resp.data);
 
-    expect(resp.data).toEqual(`curl -X GET 'http://localhost:33327/curlize' --header 'set-uuid: true'`);
+    expect(resp.data).toMatchObject({
+      headers: { 'set-uuid': 'true' },
+      method: 'GET',
+      url: 'http://localhost:33327/curlize',
+    });
   });
 
-  test('get - disable-follow-redirect', async () => {
+  test('get - change-header-key', async () => {
     const resp = await axios.request({
       url: `http://localhost:${port}/curlize`,
-      headers: { 'disable-follow-redirect': 'false' },
+      headers: { 'change-header-key': 'true' },
     });
 
     console.log('get: ', resp.data);
 
-    expect(resp.data).toEqual(
-      `curl -X GET 'http://localhost:33327/curlize' --location --header 'disable-follow-redirect: false'`,
-    );
+    expect(resp.data).toMatchObject({
+      headers: { 'Change-Header-Key': 'true' },
+      method: 'GET',
+      url: 'http://localhost:33327/curlize',
+    });
   });
 
   test('post-form-urlencoded', async () => {
@@ -92,9 +97,26 @@ describe('create', () => {
 
     console.log('post-form: ', resp.data);
 
-    expect(resp.data).toEqual(
-      `curl -X POST 'http://localhost:33327/post-form' --header 'content-type: application/x-www-form-urlencoded' --data name='ironman' --data ability='energy repulsor' --data ability='supersonic flight'`,
-    );
+    expect(resp.data).toMatchObject({
+      method: 'POST',
+      url: `http://localhost:33327/post-form`,
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: 'name=ironman&ability=energy%20repulsor&ability=supersonic%20flight',
+    });
+
+    const resp2 = await axios.request({
+      method: 'POST',
+      url: `http://localhost:33327/post-form`,
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: 'name=ironman&ability=energy%20repulsor&ability=supersonic%20flight',
+    });
+
+    expect(resp2.data).toMatchObject({
+      method: 'POST',
+      url: `http://localhost:33327/post-form`,
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: 'name=ironman&ability=energy%20repulsor&ability=supersonic%20flight',
+    });
   });
 
   test('post-form-multipart', async () => {
@@ -112,9 +134,14 @@ describe('create', () => {
 
     console.log('post-form: ', resp.data);
 
-    expect(resp.data).toEqual(
-      `curl -X POST 'http://localhost:33327/post-form' --header 'content-type: multipart/form-data' --data name='ironman' --data ability='energy repulsor' --data ability='supersonic flight'`,
-    );
+    expect(resp.data).toMatchObject({
+      url: 'http://localhost:33327/post-form',
+      method: 'POST',
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+      data: 'name=ironman&ability=energy%20repulsor&ability=supersonic%20flight',
+    });
   });
 
   test('post-form-json', async () => {
@@ -129,9 +156,17 @@ describe('create', () => {
 
     console.log('post-form: ', resp.data);
 
-    expect(resp.data).toEqual(
-      `curl -X POST 'http://localhost:33327/post-form' --header 'content-type: application/json' --data $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`,
-    );
+    expect(resp.data).toMatchObject({
+      url: 'http://localhost:33327/post-form',
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      data: {
+        name: 'ironman',
+        ability: ['energy repulsor', 'supersonic flight'],
+      },
+    });
   });
 
   test('post-form-urlencoded-prettify', async () => {
@@ -147,15 +182,15 @@ describe('create', () => {
 
     console.log('post-form: ', resp.data);
 
-    const e = `curl \\
-  -X POST 'http://localhost:33327/post-form' \\
-  --header 'content-type: application/x-www-form-urlencoded' \\
-  --header 'prettify: true' \\
-  --data name='ironman' \\
-  --data ability='energy repulsor' \\
-  --data ability='supersonic flight'`;
-
-    expect(resp.data).toEqual(e);
+    expect(resp.data).toMatchObject({
+      url: 'http://localhost:33327/post-form',
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        prettify: 'true',
+      },
+      data: 'name=ironman&ability=energy%20repulsor&ability=supersonic%20flight',
+    });
   });
 
   afterAll(async () => {

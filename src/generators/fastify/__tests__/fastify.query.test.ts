@@ -1,11 +1,11 @@
-import generateQuerystring from '#generators/generateQuerystring';
+import generateFastifyQuerystring from '#generators/fastify/generateFastifyQuerystring';
 import encodeQuerystring from '#tools/encodeQuerystring';
 
 describe('generate-querystring', () => {
   it('empty-querystring', () => {
     const url = new URL('https://localhost:1234');
 
-    const qs = generateQuerystring(url, { prettify: true });
+    const qs = generateFastifyQuerystring(url, { prettify: true });
 
     expect(qs).toEqual('');
   });
@@ -16,7 +16,7 @@ describe('generate-querystring', () => {
     )}&ability=${encodeURIComponent('supersonic flight')}`;
     const url = new URL(e);
 
-    const qs = generateQuerystring(url, { prettify: true });
+    const qs = generateFastifyQuerystring(url, { prettify: true });
 
     expect(qs).toEqual('?name=ironman&ability=energy%20repulsor&ability=supersonic%20flight');
   });
@@ -27,7 +27,7 @@ describe('generate-querystring', () => {
     )}&tid=19F88B5E-82E5-43DA-8833-D0A7FF05D17C`;
     const url = new URL(e);
 
-    const qs = generateQuerystring(url, {
+    const qs = generateFastifyQuerystring(url, {
       prettify: true,
       replacer: {
         querystring: (sp) => {

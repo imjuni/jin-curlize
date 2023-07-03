@@ -1,11 +1,13 @@
 import getContentType from '#convertors/v3/getContentType';
 import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
+import changeHeaderCase from '#tools/changeHeaderCase';
 import defaultHeaderFilterItems from '#tools/defaultHeaderFilterItems';
 import getIndent from '#tools/getIndent';
 import type { IncomingHttpHeaders } from 'http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
+import { parseBool } from 'my-easy-fp';
 
-export default function generateHeader(
+export default function generateFastifyHeader(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,
   options: ICurlizeOptions,
 ): string[] | undefined {
@@ -17,7 +19,8 @@ export default function generateHeader(
     const replaced = Object.entries(headers)
       .filter(([key]) => !(defaultHeaderFilterItems as readonly string[]).includes(key.trim().toLowerCase()))
       .reduce<IncomingHttpHeaders | IncomingHttpsHeaders>((agg, [key, value]) => {
-        return { ...agg, [key]: value };
+        const nextKey = parseBool(options.changeHeaderKey) ? changeHeaderCase(key) : key;
+        return { ...agg, [nextKey]: value };
       }, {});
 
     return replaced;

@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import getBody from '#convertors/v3/getBody';
 import getContentType from '#convertors/v3/getContentType';
 import getDefaultMultipartFormTransformer from '#convertors/v3/getDefaultMultipartFormTransformer';
-import generateBody from '#generators/generateBody';
+import generateFastifyBody from '#generators/fastify/generateFastifyBody';
+import qs from 'qs';
 
 describe('get-content-type', () => {
   it('form-type', () => {
@@ -22,21 +24,16 @@ describe('get-content-type', () => {
 
 describe('get-body', () => {
   it('form-type', () => {
-    const body = getBody(
-      {
-        raw: {
-          headers: {
-            host: 'http://localhost',
-            'content-type': 'application/x-www-form-urlencoded',
-            'access-token': 'Bearer i-am-access-token',
-          },
+    const body = getBody({
+      raw: {
+        headers: {
+          host: 'http://localhost',
+          'content-type': 'application/x-www-form-urlencoded',
+          'access-token': 'Bearer i-am-access-token',
         },
-        body: { name: 'ironman' },
       },
-      {
-        prettify: true,
-      },
-    );
+      body: { name: 'ironman' },
+    });
 
     expect(body).toMatchObject({
       form: true,
@@ -45,20 +42,15 @@ describe('get-body', () => {
   });
 
   it('json-type', () => {
-    const body = getBody(
-      {
-        raw: {
-          headers: {
-            host: 'http://localhost',
-            'access-token': 'Bearer i-am-access-token',
-          },
+    const body = getBody({
+      raw: {
+        headers: {
+          host: 'http://localhost',
+          'access-token': 'Bearer i-am-access-token',
         },
-        body: { name: 'ironman' },
       },
-      {
-        prettify: true,
-      },
-    );
+      body: { name: 'ironman' },
+    });
 
     expect(body).toMatchObject({
       form: false,
@@ -67,20 +59,15 @@ describe('get-body', () => {
   });
 
   it('undefined', () => {
-    const body = getBody(
-      {
-        raw: {
-          headers: {
-            host: 'http://localhost',
-            'access-token': 'Bearer i-am-access-token',
-          },
+    const body = getBody({
+      raw: {
+        headers: {
+          host: 'http://localhost',
+          'access-token': 'Bearer i-am-access-token',
         },
-        body: undefined,
       },
-      {
-        prettify: true,
-      },
-    );
+      body: undefined,
+    });
 
     expect(body).toMatchObject({
       form: false,
@@ -90,7 +77,8 @@ describe('get-body', () => {
 
 describe('generateBody', () => {
   it('json-body', () => {
-    const body = generateBody(
+    const body = generateFastifyBody(
+      {},
       {
         form: false,
         data: { name: 'ironman', ability: ['energy repulsor', 'supersonic flight'] },
@@ -103,8 +91,49 @@ describe('generateBody', () => {
     expect(body).toMatchObject([`--data $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`]);
   });
 
+  it('json-body-replacer', () => {
+    const body = generateFastifyBody(
+      {},
+      {
+        form: false,
+        data: { name: 'ironman', ability: ['energy repulsor', 'supersonic flight'] },
+      },
+      {
+        prettify: false,
+        replacer: {
+          body: (_header, data) => data,
+        },
+      },
+    );
+
+    expect(body).toMatchObject([`--data $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`]);
+  });
+
+  it('undefined-body-replacer', () => {
+    try {
+      const body = generateFastifyBody(
+        {},
+        {
+          form: false,
+          data: undefined,
+        },
+        {
+          prettify: false,
+          replacer: {
+            body: (_header, data) => data,
+          },
+        },
+      );
+
+      expect(body).toMatchObject([]);
+    } catch (err) {
+      expect(err).toBeNull();
+    }
+  });
+
   it('form-body', () => {
-    const body = generateBody(
+    const body = generateFastifyBody(
+      {},
       {
         form: true,
         data: { name: 'ironman', ability: ['energy repulsor', 'supersonic flight'] },
@@ -114,15 +143,20 @@ describe('generateBody', () => {
       },
     );
 
-    expect(body).toMatchObject([
-      `--data name='ironman'`,
-      `--data ability='energy repulsor'`,
-      `--data ability='supersonic flight'`,
-    ]);
+    const d = {
+      name: 'ironman',
+      team: { name: 'avengers', member: 6 },
+      ability: ['energy repulsor', 'supersonic flight'],
+    };
+    console.log(qs.stringify(d));
+    console.log(qs.stringify(d).split('&'));
+
+    expect(body).toMatchObject([`--form $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`]);
   });
 
   it('undefined-body', () => {
-    const body = generateBody(
+    const body = generateFastifyBody(
+      {},
       {
         form: true,
         data: undefined,
@@ -138,36 +172,33 @@ describe('generateBody', () => {
 
 describe('getDefaultMultipartFormTransformer', () => {
   it('plain multipart/form-data', () => {
-    const data = getDefaultMultipartFormTransformer(
-      {
-        raw: {
-          headers: {
-            'content-type': 'multipart/form-data',
-          },
-        },
-        body: {
-          name: {
-            type: 'field',
-            value: 'ironman',
-          },
-          ability: [
-            {
-              type: 'field',
-              value: 'energy repulsor',
-            },
-            {
-              type: 'field',
-              value: 'supersonic flight',
-            },
-            {
-              type: 'field',
-              value: 'Genius level intellect',
-            },
-          ],
+    const data = getDefaultMultipartFormTransformer({
+      raw: {
+        headers: {
+          'content-type': 'multipart/form-data',
         },
       },
-      { prettify: true },
-    );
+      body: {
+        name: {
+          type: 'field',
+          value: 'ironman',
+        },
+        ability: [
+          {
+            type: 'field',
+            value: 'energy repulsor',
+          },
+          {
+            type: 'field',
+            value: 'supersonic flight',
+          },
+          {
+            type: 'field',
+            value: 'Genius level intellect',
+          },
+        ],
+      },
+    });
 
     expect(data).toMatchObject({
       name: 'ironman',
@@ -200,7 +231,7 @@ describe('getDefaultMultipartFormTransformer', () => {
           ],
         },
       },
-      { prettify: true, replacer: { body: (_headers, bodyData) => bodyData } },
+      { replacer: { body: (_headers, bodyData) => bodyData } },
     );
 
     expect(data).toMatchObject({
