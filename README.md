@@ -58,7 +58,7 @@ flowchart LR
 import fastify from 'fastify';
 import { createFromFastify3 } from 'jin-curlize';
 
-const fastify = require('fastify')({
+const server = fastify({
   logger: {
     transport: {
       target: 'pino-pretty',
