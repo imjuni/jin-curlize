@@ -1,6 +1,6 @@
 {
   "name": "jin-curlize",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "curl command create from fastify request object",
   "scripts": {
     "debug": "node --nolazy --require ts-node/register --inspect-brk=9229 ./node_modules/.bin/jest --no-cache --runInBand --detectOpenHandles",
