@@ -13,10 +13,6 @@ export default function generateFastifyBody(
 ): string[] {
   const { data } = body;
 
-  if (data == null) {
-    return [];
-  }
-
   const replacer = (bodyData: JSONValue) => {
     if (options.replacer?.body != null) {
       return options.replacer.body(httpHeaders, bodyData) as JSONValue;
@@ -26,6 +22,10 @@ export default function generateFastifyBody(
   };
 
   const replaced = replacer(data);
+
+  if (replaced == null) {
+    return [];
+  }
 
   // Content-Type is application/x-www-form-urlencoded or multipart/form-data that do qs.stirng
   if (body.form) {

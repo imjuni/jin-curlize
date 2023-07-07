@@ -28,7 +28,9 @@ Why?
 - [Options](#options)
   - [createFromFastify3](#createfromfastify3)
   - [createAxiosFromFastify3](#createaxiosfromfastify3)
-- [How do I add transaction id on querystring?](#how-do-i-add-transaction-id-on-querystring)
+- [How do I add x-request-id?](#how-do-i-add-x-request-id)
+  - [Add x-request-id on querystring](#add-x-request-id-on-querystring)
+  - [Add transaction\_id on querystring](#add-transaction_id-on-querystring)
 - [jin-axios-curlize](#jin-axios-curlize)
 
 ## How to works?
@@ -92,7 +94,7 @@ server.listen({ host: '0.0.0.0', port: 3000 });
 import fastify from 'fastify';
 import { createAxiosFromFastify3 } from 'jin-curlize';
 
-const fastify = require('fastify')({
+const fastify = fastify({
   logger: {
     transport: {
       target: 'pino-pretty',
@@ -165,22 +167,111 @@ curl -X POST 'http://localhost:3000/post-form' --header 'content-type: applicati
 | replacer.body        | optional    | replacer for body                                            |
 | replacer.header      | optional    | replacer for header                                          |
 
-## How do I add transaction id on querystring?
+## How do I add x-request-id?
+
+### Add x-request-id on querystring
 
 ```ts
-import { createFromFastify3, encodeQuerystring } from 'jin-curlize';
+import crypto from 'crypto';
+import fastify from 'fastify';
+import { createFromFastify3 } from 'jin-curlize';
 
-createFromFastify3(req, {
-  prettify: false,
-  replacer: {
-    querystring: (qs) => {
-      const next = new URLSearchParams(qs);
-      // add your transaction id on querystring, `uuidgen` is linux or macosx uuid generator command
-      next.set('tid', `'"$(uuidgen)"'`);
-      return encodeQuerystring(next);
+const server = fastify({
+  logger: {
+    transport: {
+      target: 'pino-pretty',
+    },
+    serializers: {
+      res(reply) {
+        return {
+          statusCode: reply.statusCode,
+        };
+      },
+      req(request) {
+        const curlCmd = createFromFastify3(request, {
+          prettify: false,
+          replacer: {
+            header: (header) => {
+              header['x-request-id'] = crypto.randomUUID();
+              return header;
+            },
+          },
+        });
+
+        return {
+          method: request.method,
+          url: request.url,
+          path: request.routerPath,
+          parameters: request.params,
+          headers: request.headers,
+          curl: curlCmd,
+        };
+      },
     },
   },
 });
+
+server.get('/hello', () => {
+  return {
+    name: 'ironman',
+    greeting: 'hello',
+  };
+});
+
+server.listen({ port: 33991 });
+```
+
+### Add transaction_id on querystring
+
+```ts
+import fastify from "fastify";
+import { createFromFastify3 } from "jin-curlize";
+
+const server = fastify({
+  logger: {
+    transport: {
+      target: "pino-pretty",
+    },
+    serializers: {
+      res(reply) {
+        return {
+          statusCode: reply.statusCode,
+        };
+      },
+      req(request) {
+        const curlCmd = createFromFastify3(request, {
+          prettify: false,
+          replacer: {
+            querystring: (qs) => {
+              const next = new URLSearchParams(qs);
+              // add your transaction id on querystring, `uuidgen` is linux or macosx uuid generator command
+              next.set("tid", `'"$(uuidgen)"'`);
+              return next;
+            },
+          },
+        });
+
+        return {
+          method: request.method,
+          url: request.url,
+          path: request.routerPath,
+          parameters: request.params,
+          headers: request.headers,
+          curl: curlCmd,
+        };
+      },
+    },
+  },
+});
+
+server.get("/hello", () => {
+  return {
+    name: "ironman",
+    greeting: "hello",
+  };
+});
+
+server.listen({ port: 33991 });
 ```
 
 ## jin-axios-curlize
