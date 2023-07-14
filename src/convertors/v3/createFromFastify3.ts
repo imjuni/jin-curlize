@@ -10,9 +10,9 @@ import getNewline from '#tools/getNewline';
 import type { FastifyRequest } from 'fastify';
 import type { IncomingMessage } from 'node:http';
 
-export default function createFromFastify3(
+export default function createFromFastify3<T = unknown>(
   req: Pick<FastifyRequest, 'raw' | 'body'>,
-  options: ICurlizeOptions,
+  options: ICurlizeOptions<T>,
 ): string {
   const im: IncomingMessage = req.raw;
 

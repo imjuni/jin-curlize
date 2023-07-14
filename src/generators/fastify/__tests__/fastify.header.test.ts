@@ -141,4 +141,42 @@ describe('generate-header', () => {
       `--header 'referers: http://site1,http://site2'`,
     ]);
   });
+
+  it('replacer-string[]-type+array', () => {
+    const header = generateFastifyHeader(
+      {
+        host: 'http://localhost',
+        'content-type': 'application/x-www-form-urlencoded',
+        'access-token': 'Bearer i-am-access-token',
+        referers: ['http://site1', 'http://site2'],
+        user: undefined,
+      },
+      {
+        prettify: false,
+        replacer: {
+          header: (imh: IncomingHttpHeaders) => {
+            if (imh.user == null) {
+              throw new Error('nullable user');
+            }
+
+            const next = Object.entries(imh)
+              .filter(([key]) => !(defaultHeaderFilterItems as readonly string[]).includes(key.trim().toLowerCase()))
+              .reduce<IncomingHttpHeaders>((agg, [key, value]) => {
+                return { ...agg, [key]: value };
+              }, {});
+
+            delete next.user;
+            return next;
+          },
+        },
+      },
+    );
+
+    expect(header).toEqual([
+      `--header 'content-type: application/x-www-form-urlencoded'`,
+      `--header 'access-token: Bearer i-am-access-token'`,
+      `--header 'referers: http://site1,http://site2'`,
+      `--header 'user:  '`,
+    ]);
+  });
 });

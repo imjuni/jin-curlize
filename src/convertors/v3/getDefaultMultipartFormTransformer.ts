@@ -5,9 +5,9 @@ import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
 import type IFastifyMultipartFormData from '#interfaces/IFastifyMultipartFormData';
 import type { FastifyRequest } from 'fastify';
 
-export default function getDefaultMultipartFormTransformer(
+export default function getDefaultMultipartFormTransformer<T = unknown>(
   req: Pick<FastifyRequest, 'body'> & { raw: Pick<FastifyRequest['raw'], 'headers'> },
-  options?: Pick<ICurlizeOptions, 'replacer'> | Pick<IAxiosRequestConfigOptions, 'replacer'>,
+  options?: Pick<ICurlizeOptions<T>, 'replacer'> | Pick<IAxiosRequestConfigOptions<T>, 'replacer'>,
 ) {
   const contentType = getContentType(req.raw.headers);
 

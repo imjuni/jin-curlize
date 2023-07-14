@@ -1,21 +1,20 @@
 import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
-import type { JSONValue } from '#interfaces/JSONValue';
 import getIndent from '#tools/getIndent';
 import shellescape from '#tools/shellescape';
 import fastSafeStringify from 'fast-safe-stringify';
 import type { IncomingHttpHeaders } from 'http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 
-export default function generateFastifyBody(
+export default function generateFastifyBody<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,
-  body: { form: boolean; data?: JSONValue },
-  options: ICurlizeOptions,
+  body: { form: boolean; data?: T },
+  options: ICurlizeOptions<T>,
 ): string[] {
   const { data } = body;
 
-  const replacer = (bodyData: JSONValue) => {
+  const replacer = (bodyData?: T) => {
     if (options.replacer?.body != null) {
-      return options.replacer.body(httpHeaders, bodyData) as JSONValue;
+      return options.replacer.body(httpHeaders, bodyData);
     }
 
     return bodyData;
