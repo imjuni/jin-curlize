@@ -92,11 +92,12 @@ describe('generateBody', () => {
   });
 
   it('json-body-replacer', () => {
+    const bodyData: unknown = { name: 'ironman', ability: ['energy repulsor', 'supersonic flight'] };
     const body = generateFastifyBody(
       {},
       {
         form: false,
-        data: { name: 'ironman', ability: ['energy repulsor', 'supersonic flight'] },
+        data: bodyData,
       },
       {
         prettify: false,
@@ -111,21 +112,29 @@ describe('generateBody', () => {
 
   it('undefined-body-replacer', () => {
     try {
+      const bodyData: unknown = undefined;
+
       const body = generateFastifyBody(
         {},
         {
           form: false,
-          data: undefined,
+          data: bodyData,
         },
         {
           prettify: false,
           replacer: {
-            body: (_header, data) => data,
+            body: (_header, data) => {
+              if (data == null) {
+                return { name: 'ironman' };
+              }
+
+              return { ...data, name: 'ironman' };
+            },
           },
         },
       );
 
-      expect(body).toMatchObject([]);
+      expect(body).toMatchObject(['--data $\'{"name":"ironman"}\'']);
     } catch (err) {
       expect(err).toBeNull();
     }

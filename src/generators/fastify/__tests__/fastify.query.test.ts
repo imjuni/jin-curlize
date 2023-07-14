@@ -40,4 +40,22 @@ describe('generate-querystring', () => {
 
     expect(qs).toEqual('?name=ironman&ability=energy%20repulsor&tid=11111111-2222-43DA-8833-D0A7FF05D17C');
   });
+
+  it('replacer-querystring-in-case-of-empty', () => {
+    const e = 'https://localhost:1234';
+    const url = new URL(e);
+
+    const qs = generateFastifyQuerystring(url, {
+      prettify: true,
+      replacer: {
+        querystring: (sp) => {
+          const next = new URLSearchParams(sp);
+          next.set('tid', '11111111-2222-43DA-8833-D0A7FF05D17C');
+          return encodeQuerystring(next);
+        },
+      },
+    });
+
+    expect(qs).toEqual('?tid=11111111-2222-43DA-8833-D0A7FF05D17C');
+  });
 });

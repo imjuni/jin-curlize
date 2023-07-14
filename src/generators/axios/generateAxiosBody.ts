@@ -1,23 +1,22 @@
 import type IAxiosRequestConfigOptions from '#interfaces/IAxiosRequestConfigOptions';
-import type { JSONValue } from '#interfaces/JSONValue';
 import type { IncomingHttpHeaders } from 'http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 import qs from 'qs';
 
-export default function generateAxiosBody(
+export default function generateAxiosBody<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,
-  body: { form: boolean; data?: JSONValue },
-  options?: IAxiosRequestConfigOptions,
-): JSONValue | undefined {
+  body: { form: boolean; data?: T },
+  options?: IAxiosRequestConfigOptions<T>,
+): T | string | undefined {
   const { data } = body;
 
   if (data == null) {
     return undefined;
   }
 
-  const replacer = (bodyData: JSONValue) => {
+  const replacer = (bodyData?: T) => {
     if (options?.replacer?.body != null) {
-      return options.replacer.body(httpHeaders, bodyData) as JSONValue;
+      return options.replacer.body(httpHeaders, bodyData);
     }
 
     return bodyData;

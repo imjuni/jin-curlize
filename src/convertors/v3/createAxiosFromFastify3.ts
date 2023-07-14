@@ -9,9 +9,9 @@ import type { AxiosRequestConfig } from 'axios';
 import type { FastifyRequest } from 'fastify';
 import type { IncomingMessage } from 'node:http';
 
-export default function createAxiosFromFastify3(
+export default function createAxiosFromFastify3<T = unknown>(
   req: Pick<FastifyRequest, 'raw' | 'body'>,
-  options: IAxiosRequestConfigOptions,
+  options: IAxiosRequestConfigOptions<T>,
 ): AxiosRequestConfig {
   const im: IncomingMessage = req.raw;
 

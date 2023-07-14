@@ -7,23 +7,31 @@ import type { IncomingHttpHeaders } from 'http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 import { parseBool } from 'my-easy-fp';
 
-export default function generateFastifyHeader(
+export default function generateFastifyHeader<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,
-  options: ICurlizeOptions,
+  options: ICurlizeOptions<T>,
 ): string[] | undefined {
   const replacer = (headers: IncomingHttpHeaders | IncomingHttpsHeaders) => {
+    const processDefaultHeaderReplacer = () => {
+      const replaced = Object.entries(headers)
+        .filter(([key]) => !(defaultHeaderFilterItems as readonly string[]).includes(key.trim().toLowerCase()))
+        .reduce<IncomingHttpHeaders | IncomingHttpsHeaders>((agg, [key, value]) => {
+          const nextKey = parseBool(options.changeHeaderKey) ? changeHeaderCase(key) : key;
+          return { ...agg, [nextKey]: value };
+        }, {});
+
+      return replaced;
+    };
+
     if (options.replacer?.header != null) {
-      return options.replacer.header(headers);
+      try {
+        return options.replacer.header(headers);
+      } catch {
+        return processDefaultHeaderReplacer();
+      }
     }
 
-    const replaced = Object.entries(headers)
-      .filter(([key]) => !(defaultHeaderFilterItems as readonly string[]).includes(key.trim().toLowerCase()))
-      .reduce<IncomingHttpHeaders | IncomingHttpsHeaders>((agg, [key, value]) => {
-        const nextKey = parseBool(options.changeHeaderKey) ? changeHeaderCase(key) : key;
-        return { ...agg, [nextKey]: value };
-      }, {});
-
-    return replaced;
+    return processDefaultHeaderReplacer();
   };
 
   const replaced = replacer(httpHeaders);

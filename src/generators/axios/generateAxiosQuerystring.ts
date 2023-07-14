@@ -1,9 +1,9 @@
 import type IAxiosRequestConfigOptions from '#interfaces/IAxiosRequestConfigOptions';
 import { first, settify } from 'my-easy-fp';
 
-export default function generateAxiosQuerystring(
+export default function generateAxiosQuerystring<T = unknown>(
   url: URL,
-  options?: IAxiosRequestConfigOptions,
+  options?: IAxiosRequestConfigOptions<T>,
 ): Record<string, string | string[]> | undefined {
   const replacer = (searchParams: URLSearchParams): URLSearchParams => {
     if (options?.replacer?.querystring != null) {

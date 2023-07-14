@@ -6,9 +6,9 @@ import type { IncomingHttpHeaders } from 'http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 import { parseBool } from 'my-easy-fp';
 
-export default function generateAxiosHeader(
+export default function generateAxiosHeader<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,
-  options?: IAxiosRequestConfigOptions,
+  options?: IAxiosRequestConfigOptions<T>,
 ): Record<string, string | string[]> {
   const replacer = (headers: IncomingHttpHeaders | IncomingHttpsHeaders) => {
     if (options?.replacer?.header != null) {

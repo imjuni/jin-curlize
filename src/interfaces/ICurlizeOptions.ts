@@ -4,7 +4,7 @@ import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 /**
  * Generate Option
  */
-export default interface ICurlizeOptions {
+export default interface ICurlizeOptions<T = unknown> {
   /**
    * prettify command. use newline charactor
    * */
@@ -35,6 +35,6 @@ export default interface ICurlizeOptions {
   replacer?: {
     querystring?: (qs: URLSearchParams) => URLSearchParams;
     header?: ((im: IncomingHttpHeaders) => IncomingHttpHeaders) | ((im: IncomingHttpsHeaders) => IncomingHttpsHeaders);
-    body?: (header: IncomingHttpHeaders | IncomingHttpsHeaders, data: any) => any;
+    body?: (header: IncomingHttpHeaders | IncomingHttpsHeaders, data?: T) => T | undefined;
   };
 }

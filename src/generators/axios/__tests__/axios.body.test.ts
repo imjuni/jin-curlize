@@ -88,15 +88,23 @@ describe('generateBody', () => {
   });
 
   it('json-body+replacer', () => {
+    const bodyData: Record<string, string | string[]> = {
+      name: 'ironman',
+      ability: ['energy repulsor', 'supersonic flight'],
+    };
+
     const body = generateAxiosBody(
       {},
       {
         form: false,
-        data: { name: 'ironman', ability: ['energy repulsor', 'supersonic flight'] },
+        data: bodyData,
       },
       {
         replacer: {
-          body: (_header, data: Record<string, string | string[]>) => {
+          body: (_header, data?: Record<string, string | string[]>) => {
+            if (data == null) {
+              throw new Error('nullable data');
+            }
             const name = `${data.name as string}+iambigfan`;
             return { ...data, name };
           },
