@@ -4,7 +4,7 @@ import fastifyMultipart from '@fastify/multipart';
 import axios from 'axios';
 import fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastify';
 import FormData from 'form-data';
-import { isError, parseBool } from 'my-easy-fp';
+import { parseBool } from 'my-easy-fp';
 import querystring from 'node:querystring';
 import portfinder from 'portfinder';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -21,7 +21,7 @@ describe('create', () => {
     };
 
     console.log('start fastify server');
-    context.port = await portfinder.getPortPromise({ port: 35000, stopPort: 60000 });
+    context.port = await portfinder.getPortPromise({ port: 35000, stopPort: 40000 });
     context.server = fastify(option);
 
     context.server.register(fastifyFormbody);
@@ -49,16 +49,7 @@ describe('create', () => {
       reply.send(axiosReq);
     });
 
-    await context.server
-      .listen({ port: context.port, host: '127.0.0.1' })
-      .then(() => {
-        console.log('server start');
-      })
-      .catch((caught) => {
-        const err = isError(caught, new Error('unknown error raised'));
-        console.error(err.message);
-        console.error(err.stack);
-      });
+    await context.server.listen({ port: context.port });
   });
 
   it('get', async () => {
