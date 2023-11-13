@@ -1,12 +1,12 @@
-import getContentType from '#convertors/v3/getContentType';
-import type IAxiosRequestConfigOptions from '#interfaces/IAxiosRequestConfigOptions';
-import changeHeaderCase from '#tools/changeHeaderCase';
-import defaultHeaderFilterItems from '#tools/defaultHeaderFilterItems';
+import { getContentType } from '#/convertors/v3/getContentType';
+import type { IAxiosRequestConfigOptions } from '#/interfaces/IAxiosRequestConfigOptions';
+import { changeHeaderCase } from '#/tools/changeHeaderCase';
+import { defaultHeaderFilterItems } from '#/tools/defaultHeaderFilterItems';
 import type { IncomingHttpHeaders } from 'http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 import { parseBool } from 'my-easy-fp';
 
-export default function generateAxiosHeader<T = unknown>(
+export function generateAxiosHeader<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,
   options?: IAxiosRequestConfigOptions<T>,
 ): Record<string, string | string[]> {

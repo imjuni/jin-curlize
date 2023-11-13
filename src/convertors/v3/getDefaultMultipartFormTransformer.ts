@@ -1,11 +1,11 @@
-import getContentType from '#convertors/v3/getContentType';
-import { CE_FORM_CONTENT_TYPE } from '#interfaces/CE_FORM_CONTENT_TYPE';
-import type IAxiosRequestConfigOptions from '#interfaces/IAxiosRequestConfigOptions';
-import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
-import type IFastifyMultipartFormData from '#interfaces/IFastifyMultipartFormData';
+import { getContentType } from '#/convertors/v3/getContentType';
+import { CE_FORM_CONTENT_TYPE } from '#/interfaces/CE_FORM_CONTENT_TYPE';
+import type { IAxiosRequestConfigOptions } from '#/interfaces/IAxiosRequestConfigOptions';
+import type { ICurlizeOptions } from '#/interfaces/ICurlizeOptions';
+import type { IFastifyMultipartFormData } from '#/interfaces/IFastifyMultipartFormData';
 import type { FastifyRequest } from 'fastify';
 
-export default function getDefaultMultipartFormTransformer<T = unknown>(
+export function getDefaultMultipartFormTransformer<T = unknown>(
   req: Pick<FastifyRequest, 'body'> & { raw: Pick<FastifyRequest['raw'], 'headers'> },
   options?: Pick<ICurlizeOptions<T>, 'replacer'> | Pick<IAxiosRequestConfigOptions<T>, 'replacer'>,
 ) {

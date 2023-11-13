@@ -1,4 +1,4 @@
-const defaultHeaderFilterItems = [
+export const defaultHeaderFilterItems = [
   'host',
   'connection',
   'accept',
@@ -6,5 +6,3 @@ const defaultHeaderFilterItems = [
   'content-length',
   'user-agent',
 ] as const;
-
-export default defaultHeaderFilterItems;

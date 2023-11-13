@@ -4,7 +4,7 @@ import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 /**
  * Generate Option
  */
-export default interface ICurlizeOptions<T = unknown> {
+export interface ICurlizeOptions<T = unknown> {
   /**
    * prettify command. use newline charactor
    * */

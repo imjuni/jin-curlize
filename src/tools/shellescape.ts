@@ -1,10 +1,11 @@
 /**
  * return a shell compatible format
+ *
  * from: https://www.npmjs.com/package/shell-escape
  * @param inp
  * @returns
  */
-export default function shellescape(inp: string[]): string {
+export function shellescape(inp: string[]): string {
   const ret = inp.map((item: string) => {
     let next = item;
 

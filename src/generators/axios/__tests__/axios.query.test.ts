@@ -1,5 +1,6 @@
-import generateAxiosQuerystring from '#generators/axios/generateAxiosQuerystring';
-import encodeQuerystring from '#tools/encodeQuerystring';
+import { generateAxiosQuerystring } from '#/generators/axios/generateAxiosQuerystring';
+import { encodeQuerystring } from '#/tools/encodeQuerystring';
+import { describe, expect, it } from 'vitest';
 
 describe('generate-querystring', () => {
   it('empty-querystring', () => {

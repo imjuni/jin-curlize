@@ -1,13 +1,8 @@
 module.exports = {
   env: {
+    browser: true,
     es6: true,
     node: true,
-    browser: true,
-  },
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: ['tsconfig.eslint.json'],
-    tsconfigRootDir: __dirname,
   },
   extends: [
     'plugin:@typescript-eslint/eslint-recommended',
@@ -15,13 +10,44 @@ module.exports = {
     'plugin:@typescript-eslint/strict',
     'airbnb-base',
     'airbnb-typescript/base',
-    'prettier',
     'plugin:prettier/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
+    'prettier',
   ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: ['tsconfig.eslint.json'],
+    tsconfigRootDir: __dirname,
+  },
+  ignorePatterns: ['coverage/**', 'dist/**', '__test__/**', '__tests__/**'],
   plugins: ['@typescript-eslint', 'prettier', 'import'],
   rules: {
+    // ----------------------------------------------------------------------------------------------------------
+    // eslint
+    // ----------------------------------------------------------------------------------------------------------
+    'max-len': [
+      'error',
+      {
+        ignoreUrls: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+        ignoreComments: true,
+        ignoreTrailingComments: true,
+        code: 120,
+      },
+    ],
+    'no-underscore-dangle': ['error', { allowAfterThis: true }],
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'TSEnumDeclaration:not([const=true])',
+        message: "Don't declare non-const enums",
+      },
+    ],
+    // ----------------------------------------------------------------------------------------------------------
+    // @typescript-eslint
+    // ----------------------------------------------------------------------------------------------------------
     '@typescript-eslint/naming-convention': [
       'error',
       {
@@ -61,26 +87,17 @@ module.exports = {
         argsIgnorePattern: '^_.+$',
       },
     ],
-    'max-len': [
+    '@typescript-eslint/consistent-type-imports': [
       'error',
       {
-        ignoreUrls: true,
-        ignoreStrings: true,
-        ignoreTemplateLiterals: true,
-        ignoreComments: true,
-        ignoreTrailingComments: true,
-        code: 120,
+        prefer: 'type-imports',
       },
     ],
-    'no-underscore-dangle': ['error', { allowAfterThis: true }],
-    'no-restricted-syntax': [
-      'error',
-      {
-        selector: 'TSEnumDeclaration:not([const=true])',
-        message: "Don't declare non-const enums",
-      },
-    ],
-    '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
+    // ----------------------------------------------------------------------------------------------------------
+    // eslint-plugin-import
+    // ----------------------------------------------------------------------------------------------------------
+    'import/prefer-default-export': ['off'],
+    'import/no-default-export': ['error'],
   },
   overrides: [
     {
@@ -92,8 +109,18 @@ module.exports = {
     {
       files: ['**/__tests__/*.ts'],
       rules: {
+        '@typescript-eslint/no-explicit-any': ['off'],
+        '@typescript-eslint/no-floating-promises': ['off'],
         '@typescript-eslint/no-unsafe-assignment': ['off'],
+        '@typescript-eslint/no-unsafe-return': ['off'],
         'no-console': ['off'],
+      },
+    },
+    {
+      files: ['vitest.config.ts'],
+      rules: {
+        'import/no-extraneous-dependencies': ['off'],
+        'import/no-default-export': ['off'],
       },
     },
   ],

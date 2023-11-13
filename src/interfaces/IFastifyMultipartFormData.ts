@@ -1,4 +1,4 @@
-export default interface IFastifyMultipartFormData {
+export interface IFastifyMultipartFormData {
   type: string;
   value: unknown;
 }

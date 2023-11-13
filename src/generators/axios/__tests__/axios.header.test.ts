@@ -1,6 +1,7 @@
-import generateAxiosHeader from '#generators/axios/generateAxiosHeader';
-import defaultHeaderFilterItems from '#tools/defaultHeaderFilterItems';
+import { generateAxiosHeader } from '#/generators/axios/generateAxiosHeader';
+import { defaultHeaderFilterItems } from '#/tools/defaultHeaderFilterItems';
 import type { IncomingHttpHeaders } from 'http';
+import { describe, expect, it } from 'vitest';
 
 describe('generate-header', () => {
   it('string-type', () => {

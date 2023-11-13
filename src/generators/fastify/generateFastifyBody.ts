@@ -1,11 +1,11 @@
-import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
-import getIndent from '#tools/getIndent';
-import shellescape from '#tools/shellescape';
+import type { ICurlizeOptions } from '#/interfaces/ICurlizeOptions';
+import { getIndent } from '#/tools/getIndent';
+import { shellescape } from '#/tools/shellescape';
 import fastSafeStringify from 'fast-safe-stringify';
 import type { IncomingHttpHeaders } from 'http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 
-export default function generateFastifyBody<T = unknown>(
+export function generateFastifyBody<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,
   body: { form: boolean; data?: T },
   options: ICurlizeOptions<T>,

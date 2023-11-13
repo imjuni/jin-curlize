@@ -1,9 +1,9 @@
-import type IAxiosRequestConfigOptions from '#interfaces/IAxiosRequestConfigOptions';
+import type { IAxiosRequestConfigOptions } from '#/interfaces/IAxiosRequestConfigOptions';
 import type { IncomingHttpHeaders } from 'http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 import qs from 'qs';
 
-export default function generateAxiosBody<T = unknown>(
+export function generateAxiosBody<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,
   body: { form: boolean; data?: T },
   options?: IAxiosRequestConfigOptions<T>,

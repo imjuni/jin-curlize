@@ -1,6 +1,7 @@
-import generateFastifyHeader from '#generators/fastify/generateFastifyHeader';
-import defaultHeaderFilterItems from '#tools/defaultHeaderFilterItems';
+import { generateFastifyHeader } from '#/generators/fastify/generateFastifyHeader';
+import { defaultHeaderFilterItems } from '#/tools/defaultHeaderFilterItems';
 import type { IncomingHttpHeaders } from 'http';
+import { describe, expect, it } from 'vitest';
 
 describe('generate-header', () => {
   it('string-type', () => {

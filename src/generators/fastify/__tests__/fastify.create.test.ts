@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-import createFromFastify3 from '#convertors/v3/createFromFastify3';
+import { createFromFastify3 } from '#/convertors/v3/createFromFastify3';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
 import axios from 'axios';
@@ -7,9 +6,13 @@ import fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastif
 import FormData from 'form-data';
 import { isError, parseBool } from 'my-easy-fp';
 import querystring from 'node:querystring';
+import portfinder from 'portfinder';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-let server: FastifyInstance;
-const port = 33327;
+const context: {
+  server: FastifyInstance;
+  port: number;
+} = {} as any;
 
 describe('create', () => {
   beforeAll(async () => {
@@ -18,10 +21,11 @@ describe('create', () => {
     };
 
     console.log('start fastify server');
-    server = fastify(option);
+    context.port = await portfinder.getPortPromise({ port: 36000, stopPort: 60000 });
+    context.server = fastify(option);
 
-    server.register(fastifyFormbody);
-    server.register(fastifyMultipart, {
+    context.server.register(fastifyFormbody);
+    context.server.register(fastifyMultipart, {
       attachFieldsToBody: true,
       throwFileSizeLimit: true,
       limits: {
@@ -31,7 +35,7 @@ describe('create', () => {
       sharedSchemaId: 'fileUploadSchema',
     });
 
-    server.get('/curlize', (req, reply) => {
+    context.server.get('/curlize', (req, reply) => {
       const prettify = parseBool(req.headers.prettify);
       const disableFollowRedirect = parseBool(req.headers['disable-follow-redirect'] ?? true);
       const curlCmd = createFromFastify3(req, { prettify, disableFollowRedirect });
@@ -39,15 +43,15 @@ describe('create', () => {
       reply.send(curlCmd);
     });
 
-    server.post('/post-form', {}, (req, reply) => {
+    context.server.post('/post-form', {}, (req, reply) => {
       const prettify = parseBool(req.headers.prettify);
       const curlCmd = createFromFastify3(req, { prettify });
 
       reply.send(curlCmd);
     });
 
-    await server
-      .listen({ port })
+    await context.server
+      .listen({ port: context.port })
       .then(() => {
         console.log('server start');
       })
@@ -58,31 +62,34 @@ describe('create', () => {
       });
   });
 
-  test('get', async () => {
-    const resp = await axios.request({ url: `http://localhost:${port}/curlize`, headers: { 'set-uuid': true } });
+  it('get', async () => {
+    const resp = await axios.request({
+      url: `http://localhost:${context.port}/curlize`,
+      headers: { 'set-uuid': true },
+    });
 
     console.log('get: ', resp.data);
 
-    expect(resp.data).toEqual(`curl -X GET 'http://localhost:33327/curlize' --header 'set-uuid: true'`);
+    expect(resp.data).toEqual(`curl -X GET 'http://localhost:${context.port}/curlize' --header 'set-uuid: true'`);
   });
 
-  test('get - disable-follow-redirect', async () => {
+  it('get - disable-follow-redirect', async () => {
     const resp = await axios.request({
-      url: `http://localhost:${port}/curlize`,
+      url: `http://localhost:${context.port}/curlize`,
       headers: { 'disable-follow-redirect': 'false' },
     });
 
     console.log('get: ', resp.data);
 
     expect(resp.data).toEqual(
-      `curl -X GET 'http://localhost:33327/curlize' --location --header 'disable-follow-redirect: false'`,
+      `curl -X GET 'http://localhost:${context.port}/curlize' --location --header 'disable-follow-redirect: false'`,
     );
   });
 
-  test('post-form-urlencoded', async () => {
+  it('post-form-urlencoded', async () => {
     const resp = await axios.request({
       method: 'post',
-      url: `http://localhost:${port}/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       data: querystring.stringify({
         name: 'ironman',
@@ -93,11 +100,11 @@ describe('create', () => {
     console.log('post-form: ', resp.data);
 
     expect(resp.data).toEqual(
-      `curl -X POST 'http://localhost:33327/post-form' --header 'content-type: application/x-www-form-urlencoded' --form $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`,
+      `curl -X POST 'http://localhost:${context.port}/post-form' --header 'content-type: application/x-www-form-urlencoded' --form $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`,
     );
   });
 
-  test('post-form-multipart', async () => {
+  it('post-form-multipart', async () => {
     const formData = new FormData();
 
     formData.append('name', 'ironman');
@@ -106,21 +113,21 @@ describe('create', () => {
 
     const resp = await axios.request({
       method: 'post',
-      url: `http://localhost:${port}/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       data: formData,
     });
 
     console.log('post-form: ', resp.data);
 
     expect(resp.data).toEqual(
-      `curl -X POST 'http://localhost:33327/post-form' --header 'content-type: multipart/form-data' --form $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`,
+      `curl -X POST 'http://localhost:${context.port}/post-form' --header 'content-type: multipart/form-data' --form $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`,
     );
   });
 
-  test('post-form-json', async () => {
+  it('post-form-json', async () => {
     const resp = await axios.request({
       method: 'post',
-      url: `http://localhost:${port}/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       data: {
         name: 'ironman',
         ability: ['energy repulsor', 'supersonic flight'],
@@ -130,14 +137,14 @@ describe('create', () => {
     console.log('post-form: ', resp.data);
 
     expect(resp.data).toEqual(
-      `curl -X POST 'http://localhost:33327/post-form' --header 'content-type: application/json' --data $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`,
+      `curl -X POST 'http://localhost:${context.port}/post-form' --header 'content-type: application/json' --data $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`,
     );
   });
 
-  test('post-form-urlencoded-prettify', async () => {
+  it('post-form-urlencoded-prettify', async () => {
     const resp = await axios.request({
       method: 'post',
-      url: `http://localhost:${port}/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded', prettify: 'true' },
       data: querystring.stringify({
         name: 'ironman',
@@ -148,7 +155,7 @@ describe('create', () => {
     console.log('post-form: ', resp.data);
 
     const e = `curl \\
-  -X POST 'http://localhost:33327/post-form' \\
+  -X POST 'http://localhost:${context.port}/post-form' \\
   --header 'content-type: application/x-www-form-urlencoded' \\
   --header 'prettify: true' \\
   --form $'{"name":"ironman","ability":["energy repulsor","supersonic flight"]}'`;
@@ -157,7 +164,7 @@ describe('create', () => {
   });
 
   afterAll(async () => {
-    server.close();
+    context.server.close();
     console.log('close fastify server');
   });
 });
