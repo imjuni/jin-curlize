@@ -2,9 +2,9 @@ import { getContentType } from '#/convertors/v3/getContentType';
 import type { IAxiosRequestConfigOptions } from '#/interfaces/IAxiosRequestConfigOptions';
 import { changeHeaderCase } from '#/tools/changeHeaderCase';
 import { defaultHeaderFilterItems } from '#/tools/defaultHeaderFilterItems';
-import type { IncomingHttpHeaders } from 'http';
-import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 import { parseBool } from 'my-easy-fp';
+import type { IncomingHttpHeaders } from 'node:http';
+import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'node:http2';
 
 export function generateAxiosHeader<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,

@@ -3,30 +3,29 @@
   "version": "1.3.1",
   "description": "curl command create from fastify request object",
   "scripts": {
+    "clean": "rimraf dist",
     "debug": "node --nolazy --require ts-node/register --inspect-brk=9229 ./node_modules/.bin/jest --no-cache --runInBand --detectOpenHandles",
     "lint": "eslint --cache .",
     "prettier": "prettier --write .",
     "lint-staged": "lint-staged",
-    "prebuild": "run-p clean lint",
-    "build": "tsc -p tsconfig.prod.json",
-    "prepack:dev": "pnpm run build && run-s clean ctix:single",
-    "pack:dev": "NODE_ENV=production rollup --config .configs/rollup.config.dev.ts --configPlugin typescript",
-    "prepack:prod": "run-p build && run-s clean ctix:single",
-    "pack:prod": "NODE_ENV=production rollup --config .configs/rollup.config.prod.ts --configPlugin typescript",
-    "postpack:prod": "run-s ctix:remove clean:dts",
-    "dts": "tsc -p tsconfig.dts.json",
-    "dts-gen2": "dts-bundle-generator --project tsconfig.dts.json -o dist/types/index.d.ts --no-banner src/index.ts",
-    "dts-gen": "rollup --config ./.configs/rollup.config.mjs",
+    "build": "pnpm run clean && tsc -p tsconfig.prod.json",
     "ctix": "ctix build --config .configs/.ctirc",
-    "ctix-rm": "ctix remove --config ./.configs/.ctirc",
-    "prepub:prod": "run-s clean pack:prod",
-    "pub:prod": "pnpm publish",
-    "pub:dev": "pnpm publish --registry http://localhost:8901 --force",
-    "clean": "rimraf dist artifact",
-    "clean:dts": "rimraf dist/cjs/src dist/esm/src",
+    "ctix-rm": "ctix remove --config ./.configs/.ctirc --force-yes --remove-backup",
+    "esbuild-cjs": "FORMAT=cjs node .configs/esbuild.mjs",
+    "esbuild-esm": "FORMAT=esm node .configs/esbuild.mjs",
+    "dts": "tsc -p tsconfig.dts.json",
+    "dts-alias": "tsc-alias -p tsconfig.dts.json",
+    "dts-gen": "rollup --config ./.configs/rollup.config.mjs",
+    "dts-pack": "run-s dts dts-alias dts-gen",
+    "dts-rm": "rimraf dist/types/origin",
+    "bundle-pack": "run-p esbuild-cjs esbuild-esm dts-pack",
+    "bundle": "run-s clean ctix bundle-pack ctix-rm dts-rm",
+    "pub": "pnpm run bundle && cross-env RELEASE_MODE=true pnpm publish --registry http://localhost:8901",
+    "unpub": "pnpm unpublish $npm_package_name@$npm_package_version --registry http://localhost:8901 --force",
+    "pub:prod": "pnpm run bundle && cross-env RELEASE_MODE=true pnpm publish --access=public",
     "dd": "deps-diff md -d prod -d dev --title-list-type '*' --deps-list-type '*' --content-list-type '*'",
     "test": "vitest run --coverage",
-    "test:silent": "node --trace-warnings --no-compilation-cache node_modules/.bin/jest --coverage --silent",
+    "prepublishOnly": "node prepublish.cjs",
     "prepare": "husky install"
   },
   "repository": {
@@ -49,16 +48,13 @@
       "typings": "./dist/esm/index.d.mts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@fastify/formbody": "^7.4.0",
     "@fastify/multipart": "^8.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
-    "@rollup/plugin-terser": "^0.4.3",
-    "@rollup/plugin-typescript": "^11.1.2",
-    "@swc/core": "^1.3.67",
-    "@swc/helpers": "^0.5.1",
-    "@swc/jest": "^0.2.26",
     "@tsconfig/node16": "^1.0.4",
     "@types/node": "^16.18.36",
     "@types/qs": "^6.9.7",
@@ -69,7 +65,7 @@
     "cross-env": "^7.0.3",
     "ctix": "^2.1.0",
     "deps-diff": "^1.0.2",
-    "dts-bundle-generator": "^8.1.2",
+    "esbuild": "^0.19.5",
     "eslint": "^8.44.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -84,8 +80,6 @@
     "fastify": "^4.19.1",
     "form-data": "^4.0.0",
     "husky": "^8.0.3",
-    "jest": "^29.5.0",
-    "jest_workaround": "^0.76.0",
     "lint-staged": "^15.1.0",
     "nock": "^13.3.1",
     "npm-run-all": "^4.1.5",
@@ -97,9 +91,8 @@
     "rimraf": "^5.0.1",
     "rollup": "^4.4.0",
     "rollup-plugin-dts": "^6.1.0",
-    "rollup-plugin-swc3": "^0.8.2",
-    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.8",
     "typescript": "^5.1.6",
     "vite-tsconfig-paths": "^4.2.1",
     "vitest": "^0.34.6"
@@ -113,7 +106,9 @@
     "qs": "^6.11.2"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": ["cross-env NODE_ENV=production eslint --cache"],
+    "*.{js,jsx,ts,tsx}": [
+      "cross-env NODE_ENV=production eslint --cache"
+    ],
     "*.{js,jsx,ts,tsx},*.json,.{eslintrc.cjs,prettierrc}": [
       "cross-env NODE_ENV=production prettier --ignore-path .eslintignore --parser json --write"
     ]
