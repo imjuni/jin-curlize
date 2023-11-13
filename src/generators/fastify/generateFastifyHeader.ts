@@ -3,9 +3,9 @@ import type { ICurlizeOptions } from '#/interfaces/ICurlizeOptions';
 import { changeHeaderCase } from '#/tools/changeHeaderCase';
 import { defaultHeaderFilterItems } from '#/tools/defaultHeaderFilterItems';
 import { getIndent } from '#/tools/getIndent';
-import type { IncomingHttpHeaders } from 'http';
-import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 import { parseBool } from 'my-easy-fp';
+import type { IncomingHttpHeaders } from 'node:http';
+import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'node:http2';
 
 export function generateFastifyHeader<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,

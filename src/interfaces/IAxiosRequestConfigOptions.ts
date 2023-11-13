@@ -1,5 +1,5 @@
-import type { IncomingHttpHeaders } from 'http';
-import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
+import type { IncomingHttpHeaders } from 'node:http';
+import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'node:http2';
 
 /**
  * Generate Option

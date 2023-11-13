@@ -2,8 +2,8 @@ import type { ICurlizeOptions } from '#/interfaces/ICurlizeOptions';
 import { getIndent } from '#/tools/getIndent';
 import { shellescape } from '#/tools/shellescape';
 import fastSafeStringify from 'fast-safe-stringify';
-import type { IncomingHttpHeaders } from 'http';
-import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
+import type { IncomingHttpHeaders } from 'node:http';
+import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'node:http2';
 
 export function generateFastifyBody<T = unknown>(
   httpHeaders: IncomingHttpHeaders | IncomingHttpsHeaders,
