@@ -1,6 +1,6 @@
-import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
+import type { ICurlizeOptions } from '#/interfaces/ICurlizeOptions';
 
-export default function generateFastifyQuerystring<T = unknown>(url: URL, options: ICurlizeOptions<T>): string {
+export function generateFastifyQuerystring<T = unknown>(url: URL, options: ICurlizeOptions<T>): string {
   const replacer = (searchParams: URLSearchParams): URLSearchParams => {
     if (options.replacer?.querystring != null) {
       return options.replacer.querystring(searchParams);

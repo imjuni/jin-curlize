@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-import createAxiosFromFastify3 from '#convertors/v3/createAxiosFromFastify3';
+import { createAxiosFromFastify3 } from '#/convertors/v3/createAxiosFromFastify3';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
 import axios from 'axios';
@@ -7,9 +6,13 @@ import fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastif
 import FormData from 'form-data';
 import { isError, parseBool } from 'my-easy-fp';
 import querystring from 'node:querystring';
+import portfinder from 'portfinder';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-let server: FastifyInstance;
-const port = 33327;
+const context: {
+  server: FastifyInstance;
+  port: number;
+} = {} as any;
 
 describe('create', () => {
   beforeAll(async () => {
@@ -18,10 +21,11 @@ describe('create', () => {
     };
 
     console.log('start fastify server');
-    server = fastify(option);
+    context.port = await portfinder.getPortPromise({ port: 35000, stopPort: 60000 });
+    context.server = fastify(option);
 
-    server.register(fastifyFormbody);
-    server.register(fastifyMultipart, {
+    context.server.register(fastifyFormbody);
+    context.server.register(fastifyMultipart, {
       attachFieldsToBody: true,
       throwFileSizeLimit: true,
       limits: {
@@ -31,22 +35,22 @@ describe('create', () => {
       sharedSchemaId: 'fileUploadSchema',
     });
 
-    server.get('/curlize', (req, reply) => {
+    context.server.get('/curlize', (req, reply) => {
       const changeHeaderKey = parseBool(req.headers['change-header-key'] ?? false);
       const axiosReq = createAxiosFromFastify3(req, { changeHeaderKey });
 
       reply.send(axiosReq);
     });
 
-    server.post('/post-form', {}, (req, reply) => {
+    context.server.post('/post-form', {}, (req, reply) => {
       const changeHeaderKey = parseBool(req.headers['change-header-key'] ?? false);
       const axiosReq = createAxiosFromFastify3(req, { changeHeaderKey });
 
       reply.send(axiosReq);
     });
 
-    await server
-      .listen({ port })
+    await context.server
+      .listen({ port: context.port, host: '127.0.0.1' })
       .then(() => {
         console.log('server start');
       })
@@ -57,21 +61,24 @@ describe('create', () => {
       });
   });
 
-  test('get', async () => {
-    const resp = await axios.request({ url: `http://localhost:${port}/curlize`, headers: { 'set-uuid': true } });
+  it('get', async () => {
+    const resp = await axios.request({
+      url: `http://localhost:${context.port}/curlize`,
+      headers: { 'set-uuid': true },
+    });
 
     console.log('get: ', resp.data);
 
     expect(resp.data).toMatchObject({
       headers: { 'set-uuid': 'true' },
       method: 'GET',
-      url: 'http://localhost:33327/curlize',
+      url: `http://localhost:${context.port}/curlize`,
     });
   });
 
-  test('get - change-header-key', async () => {
+  it('get - change-header-key', async () => {
     const resp = await axios.request({
-      url: `http://localhost:${port}/curlize`,
+      url: `http://localhost:${context.port}/curlize`,
       headers: { 'change-header-key': 'true' },
     });
 
@@ -80,14 +87,14 @@ describe('create', () => {
     expect(resp.data).toMatchObject({
       headers: { 'Change-Header-Key': 'true' },
       method: 'GET',
-      url: 'http://localhost:33327/curlize',
+      url: `http://localhost:${context.port}/curlize`,
     });
   });
 
-  test('post-form-urlencoded', async () => {
+  it('post-form-urlencoded', async () => {
     const resp = await axios.request({
       method: 'post',
-      url: `http://localhost:${port}/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       data: querystring.stringify({
         name: 'ironman',
@@ -99,27 +106,27 @@ describe('create', () => {
 
     expect(resp.data).toMatchObject({
       method: 'POST',
-      url: `http://localhost:33327/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
       data: 'name=ironman&ability=energy%20repulsor&ability=supersonic%20flight',
     });
 
     const resp2 = await axios.request({
       method: 'POST',
-      url: `http://localhost:33327/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
       data: 'name=ironman&ability=energy%20repulsor&ability=supersonic%20flight',
     });
 
     expect(resp2.data).toMatchObject({
       method: 'POST',
-      url: `http://localhost:33327/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
       data: 'name=ironman&ability=energy%20repulsor&ability=supersonic%20flight',
     });
   });
 
-  test('post-form-multipart', async () => {
+  it('post-form-multipart', async () => {
     const formData = new FormData();
 
     formData.append('name', 'ironman');
@@ -128,14 +135,14 @@ describe('create', () => {
 
     const resp = await axios.request({
       method: 'post',
-      url: `http://localhost:${port}/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       data: formData,
     });
 
     console.log('post-form: ', resp.data);
 
     expect(resp.data).toMatchObject({
-      url: 'http://localhost:33327/post-form',
+      url: `http://localhost:${context.port}/post-form`,
       method: 'POST',
       headers: {
         'content-type': 'multipart/form-data',
@@ -144,10 +151,10 @@ describe('create', () => {
     });
   });
 
-  test('post-form-json', async () => {
+  it('post-form-json', async () => {
     const resp = await axios.request({
       method: 'post',
-      url: `http://localhost:${port}/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       data: {
         name: 'ironman',
         ability: ['energy repulsor', 'supersonic flight'],
@@ -157,7 +164,7 @@ describe('create', () => {
     console.log('post-form: ', resp.data);
 
     expect(resp.data).toMatchObject({
-      url: 'http://localhost:33327/post-form',
+      url: `http://localhost:${context.port}/post-form`,
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -169,10 +176,10 @@ describe('create', () => {
     });
   });
 
-  test('post-form-urlencoded-prettify', async () => {
+  it('post-form-urlencoded-prettify', async () => {
     const resp = await axios.request({
       method: 'post',
-      url: `http://localhost:${port}/post-form`,
+      url: `http://localhost:${context.port}/post-form`,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded', prettify: 'true' },
       data: querystring.stringify({
         name: 'ironman',
@@ -183,7 +190,7 @@ describe('create', () => {
     console.log('post-form: ', resp.data);
 
     expect(resp.data).toMatchObject({
-      url: 'http://localhost:33327/post-form',
+      url: `http://localhost:${context.port}/post-form`,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
@@ -194,7 +201,7 @@ describe('create', () => {
   });
 
   afterAll(async () => {
-    server.close();
+    context.server.close();
     console.log('close fastify server');
   });
 });

@@ -1,5 +1,7 @@
-import getMethod from '#convertors/IncomingMessage/getMethod';
-import getUrl from '#convertors/IncomingMessage/getUrl';
+import { getHost } from '#/convertors/IncomingMessage/getHost';
+import { getMethod } from '#/convertors/IncomingMessage/getMethod';
+import { getUrl } from '#/convertors/IncomingMessage/getUrl';
+import { describe, expect, it } from 'vitest';
 
 describe('getMethod', () => {
   it('undefined', () => {
@@ -79,5 +81,18 @@ describe('getUrl', () => {
 
     expect(r.href).toEqual('https://localhost:3000/marvel/ironman/cool');
     expect(r.pathname).toEqual('/marvel/ironman/cool');
+  });
+});
+
+describe('getUrl', () => {
+  it('null', () => {
+    expect(() => {
+      getHost({});
+    }).toThrow(Error);
+  });
+
+  it('pass', () => {
+    const r = getHost({ host: 'https://localhost:3000' });
+    expect(r).toEqual('https://localhost:3000');
   });
 });

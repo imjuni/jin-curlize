@@ -1,7 +1,7 @@
-import type IAxiosRequestConfigOptions from '#interfaces/IAxiosRequestConfigOptions';
+import type { IAxiosRequestConfigOptions } from '#/interfaces/IAxiosRequestConfigOptions';
 import { first, settify } from 'my-easy-fp';
 
-export default function generateAxiosQuerystring<T = unknown>(
+export function generateAxiosQuerystring<T = unknown>(
   url: URL,
   options?: IAxiosRequestConfigOptions<T>,
 ): Record<string, string | string[]> | undefined {

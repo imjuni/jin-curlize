@@ -3,6 +3,6 @@
   "compilerOptions": {
     "allowJs": true
   },
-  "include": ["./src", ".eslintrc.cjs", "jest.config.cjs"],
+  "include": ["./src", ".eslintrc.cjs", "vitest.config.ts"],
   "exclude": ["**/node_modules/**", "**/dist/**/*", "**/.configs/**"]
 }

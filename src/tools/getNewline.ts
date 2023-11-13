@@ -1,6 +1,6 @@
-import type ICurlizeOptions from '#interfaces/ICurlizeOptions';
+import type { ICurlizeOptions } from '#/interfaces/ICurlizeOptions';
 
-export default function getNewline<T = unknown>(options: ICurlizeOptions<T>) {
+export function getNewline<T = unknown>(options: ICurlizeOptions<T>) {
   if (options.prettify) {
     return ' \\\n';
   }

@@ -1,4 +1,4 @@
-export default function encodeQuerystring(sp: URLSearchParams): URLSearchParams {
+export function encodeQuerystring(sp: URLSearchParams): URLSearchParams {
   const next = new URLSearchParams(sp);
 
   Array.from(sp.entries()).forEach(([key, value]) => {

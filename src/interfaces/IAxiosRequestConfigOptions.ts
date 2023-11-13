@@ -4,7 +4,7 @@ import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'http2';
 /**
  * Generate Option
  */
-export default interface IAxiosRequestConfigOptions<T = unknown> {
+export interface IAxiosRequestConfigOptions<T = unknown> {
   /**
    * change header key case. [IncomingHttpHeaders](https://github.com/nodejs/node/blob/v16.9.0/lib/http.js) makes
    * header key lowercase. For example, `Content-Type` to `content-type`. `changeHeaderKey` option makes

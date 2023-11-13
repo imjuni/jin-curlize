@@ -1,6 +1,7 @@
-import changeHeaderCase from '#tools/changeHeaderCase';
-import getIndent from '#tools/getIndent';
-import toUpperCaseFirst from '#tools/toUpperCaseFirst';
+import { changeHeaderCase } from '#/tools/changeHeaderCase';
+import { getIndent } from '#/tools/getIndent';
+import { toUpperCaseFirst } from '#/tools/toUpperCaseFirst';
+import { describe, expect, it } from 'vitest';
 
 describe('getIndent', () => {
   it('2-space', () => {

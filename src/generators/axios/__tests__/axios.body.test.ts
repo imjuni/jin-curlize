@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import getBody from '#convertors/v3/getBody';
-import getContentType from '#convertors/v3/getContentType';
-import getDefaultMultipartFormTransformer from '#convertors/v3/getDefaultMultipartFormTransformer';
-import generateAxiosBody from '#generators/axios/generateAxiosBody';
+import { getBody } from '#/convertors/v3/getBody';
+import { getContentType } from '#/convertors/v3/getContentType';
+import { getDefaultMultipartFormTransformer } from '#/convertors/v3/getDefaultMultipartFormTransformer';
+import { generateAxiosBody } from '#/generators/axios/generateAxiosBody';
+import { describe, expect, it } from 'vitest';
 
 describe('get-content-type', () => {
   it('form-type', () => {

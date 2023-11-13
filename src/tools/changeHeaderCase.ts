@@ -1,6 +1,6 @@
-import toUpperCaseFirst from '#tools/toUpperCaseFirst';
+import { toUpperCaseFirst } from '#/tools/toUpperCaseFirst';
 
-export default function changeHeaderCase(key: string) {
+export function changeHeaderCase(key: string) {
   return key
     .split('-')
     .map((item) => toUpperCaseFirst(item))

@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import getBody from '#convertors/v3/getBody';
-import getContentType from '#convertors/v3/getContentType';
-import getDefaultMultipartFormTransformer from '#convertors/v3/getDefaultMultipartFormTransformer';
-import generateFastifyBody from '#generators/fastify/generateFastifyBody';
+import { getBody } from '#/convertors/v3/getBody';
+import { getContentType } from '#/convertors/v3/getContentType';
+import { getDefaultMultipartFormTransformer } from '#/convertors/v3/getDefaultMultipartFormTransformer';
+import { generateFastifyBody } from '#/generators/fastify/generateFastifyBody';
 import qs from 'qs';
+import { describe, expect, it } from 'vitest';
 
 describe('get-content-type', () => {
   it('form-type', () => {
