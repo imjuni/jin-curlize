@@ -1,7 +1,10 @@
 {
   "name": "jin-curlize",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "curl command create from fastify request object",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "debug": "node --nolazy --require ts-node/register --inspect-brk=9229 ./node_modules/.bin/jest --no-cache --runInBand --detectOpenHandles",
@@ -48,14 +51,12 @@
       "typings": "./dist/esm/index.d.mts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "devDependencies": {
     "@fastify/formbody": "^7.4.0",
     "@fastify/multipart": "^8.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
-    "@tsconfig/node16": "^1.0.4",
+    "@tsconfig/node18": "^18.2.2",
     "@types/node": "^16.18.36",
     "@types/qs": "^6.9.7",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
@@ -106,9 +107,7 @@
     "qs": "^6.11.2"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "cross-env NODE_ENV=production eslint --cache"
-    ],
+    "*.{js,jsx,ts,tsx}": ["cross-env NODE_ENV=production eslint --cache"],
     "*.{js,jsx,ts,tsx},*.json,.{eslintrc.cjs,prettierrc}": [
       "cross-env NODE_ENV=production prettier --ignore-path .eslintignore --parser json --write"
     ]
