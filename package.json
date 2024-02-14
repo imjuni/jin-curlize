@@ -56,7 +56,9 @@
       }
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@fastify/formbody": "^7.4.0",
     "@fastify/multipart": "^8.1.0",
@@ -107,12 +109,15 @@
     "test": "test"
   },
   "dependencies": {
+    "change-case": "^5.4.3",
     "fast-safe-stringify": "^2.1.1",
     "my-easy-fp": "^0.22.0",
     "qs": "^6.11.2"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": ["cross-env NODE_ENV=production eslint --cache"],
+    "*.{js,jsx,ts,tsx}": [
+      "cross-env NODE_ENV=production eslint --cache"
+    ],
     "*.{js,jsx,ts,tsx},*.json,.{eslintrc.cjs,prettierrc}": [
       "cross-env NODE_ENV=production prettier --ignore-path .eslintignore --parser json --write"
     ]
