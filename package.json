@@ -1,6 +1,6 @@
 {
   "name": "jin-curlize",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "curl command create from fastify request object",
   "engines": {
     "node": ">=18"
@@ -56,9 +56,7 @@
       }
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "devDependencies": {
     "@fastify/formbody": "^7.4.0",
     "@fastify/multipart": "^8.1.0",
@@ -115,9 +113,7 @@
     "qs": "^6.11.2"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "cross-env NODE_ENV=production eslint --cache"
-    ],
+    "*.{js,jsx,ts,tsx}": ["cross-env NODE_ENV=production eslint --cache"],
     "*.{js,jsx,ts,tsx},*.json,.{eslintrc.cjs,prettierrc}": [
       "cross-env NODE_ENV=production prettier --ignore-path .eslintignore --parser json --write"
     ]
