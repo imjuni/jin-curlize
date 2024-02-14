@@ -3,6 +3,7 @@ import type { ICurlizeOptions } from '#/interfaces/ICurlizeOptions';
 import { changeHeaderCase } from '#/tools/changeHeaderCase';
 import { defaultHeaderFilterItems } from '#/tools/defaultHeaderFilterItems';
 import { getIndent } from '#/tools/getIndent';
+import { kebabCase } from 'change-case';
 import { parseBool } from 'my-easy-fp';
 import type { IncomingHttpHeaders } from 'node:http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'node:http2';
@@ -37,18 +38,27 @@ export function generateFastifyHeader<T = unknown>(
   const replaced = replacer(httpHeaders);
 
   // TODO: single space processing
-  const headers = Object.entries(replaced).map(([key, value]) => {
-    if (Array.isArray(value)) {
-      return `${getIndent(options)}--header '${key}: ${value.join(',')}'`;
-    }
+  const headers = Object.entries(replaced)
+    .map(([key, value]) => ({ key, value }))
+    .filter((entry) => {
+      if (options.excludeHeaders == null) {
+        return true;
+      }
 
-    if (key.toLocaleLowerCase() === 'content-type') {
-      const refinedContentType = getContentType({ 'content-type': value });
-      return `${getIndent(options)}--header '${key}: ${refinedContentType}'`;
-    }
+      return !options.excludeHeaders.includes(kebabCase(entry.key));
+    })
+    .map(({ key, value }) => {
+      if (Array.isArray(value)) {
+        return `${getIndent(options)}--header '${key}: ${value.join(',')}'`;
+      }
 
-    return `${getIndent(options)}--header '${key}: ${value ?? ' '}'`;
-  });
+      if (key.toLocaleLowerCase() === 'content-type') {
+        const refinedContentType = getContentType({ 'content-type': value });
+        return `${getIndent(options)}--header '${key}: ${refinedContentType}'`;
+      }
+
+      return `${getIndent(options)}--header '${key}: ${value ?? ' '}'`;
+    });
 
   return headers;
 }

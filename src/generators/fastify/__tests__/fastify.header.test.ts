@@ -180,4 +180,26 @@ describe('generate-header', () => {
       `--header 'user:  '`,
     ]);
   });
+
+  it('replacer-string[]-type+array and exclude header', () => {
+    const header = generateFastifyHeader(
+      {
+        host: 'http://localhost',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'access-token': 'Bearer i-am-access-token',
+        referers: ['http://site1', 'http://site2'],
+        user: undefined,
+      },
+      {
+        prettify: false,
+        excludeHeaders: ['content-type'],
+      },
+    );
+
+    expect(header).toEqual([
+      `--header 'access-token: Bearer i-am-access-token'`,
+      `--header 'referers: http://site1,http://site2'`,
+      `--header 'user:  '`,
+    ]);
+  });
 });

@@ -15,7 +15,12 @@ export default defineConfig({
       // @vitest/coverage-istanbul
       // provider: 'istanbul', // or 'v8'
       provider: 'v8', // or 'v8'
-      exclude: ['src/common/modules/noop.ts'],
+      exclude: [
+        'src/interfaces/IAxiosRequestConfigOptions.ts',
+        'src/interfaces/ICurlizeOptions.ts',
+        'src/interfaces/IFastifyMultipartFormData.ts',
+        'src/interfaces/JSONValue.ts',
+      ],
       include: ['**/src/**'],
     },
   },

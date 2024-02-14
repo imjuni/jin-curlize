@@ -31,6 +31,11 @@ export interface ICurlizeOptions<T = unknown> {
    */
   disableFollowRedirect?: boolean;
 
+  /**
+   * curl 명령어를 생성할 때 제외할 header 키를 입력합니다. 모든 header는 kebab lowerCase를 사용합니다.
+   */
+  excludeHeaders?: string[];
+
   /** replace input data for curl command building */
   replacer?: {
     querystring?: (qs: URLSearchParams) => URLSearchParams;
