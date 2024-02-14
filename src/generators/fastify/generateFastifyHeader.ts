@@ -3,7 +3,7 @@ import type { ICurlizeOptions } from '#/interfaces/ICurlizeOptions';
 import { changeHeaderCase } from '#/tools/changeHeaderCase';
 import { defaultHeaderFilterItems } from '#/tools/defaultHeaderFilterItems';
 import { getIndent } from '#/tools/getIndent';
-import { kebabCase } from 'change-case';
+import { paramCase } from 'change-case';
 import { parseBool } from 'my-easy-fp';
 import type { IncomingHttpHeaders } from 'node:http';
 import type { IncomingHttpHeaders as IncomingHttpsHeaders } from 'node:http2';
@@ -45,7 +45,7 @@ export function generateFastifyHeader<T = unknown>(
         return true;
       }
 
-      return !options.excludeHeaders.includes(kebabCase(entry.key));
+      return !options.excludeHeaders.includes(paramCase(entry.key));
     })
     .map(({ key, value }) => {
       if (Array.isArray(value)) {
